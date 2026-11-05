@@ -28,6 +28,7 @@ public class Pathfinding : MonoBehaviour
 
     private void Start()
     {
+        GenerateRandomGrid(10, 10, 0.3f);
         FindPath(start, goal);
     }
 
@@ -40,6 +41,23 @@ public class Pathfinding : MonoBehaviour
         }
 
         FindPath(start, goal);
+    }
+
+    private void GenerateRandomGrid(int width, int height, float obstacleProbability)
+    {
+        grid = new int[height, width];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                grid[y, x] = Random.value < obstacleProbability ? 1 : 0;
+            }
+        }
+
+        // keep start and goal open or the path doesnt get found
+        grid[start.y, start.x] = 0;
+        grid[goal.y, goal.x] = 0;
     }
 
     private void OnDrawGizmos()
