@@ -4,8 +4,8 @@ using UnityEngine;
 public class Pathfinding : MonoBehaviour
 {
     private List<Vector2Int> path = new List<Vector2Int>();
-    private Vector2Int start = new Vector2Int(0, 1);
-    private Vector2Int goal = new Vector2Int(4, 4);
+    [SerializeField] private Vector2Int start = new Vector2Int(0, 1);
+    [SerializeField] private Vector2Int goal = new Vector2Int(4, 4);
     private Vector2Int next;
     private Vector2Int current;
 
@@ -28,6 +28,17 @@ public class Pathfinding : MonoBehaviour
 
     private void Start()
     {
+        FindPath(start, goal);
+    }
+
+    // fires on Inspector changes, but also in edit mode, so only repath while playing
+    private void OnValidate()
+    {
+        if (!Application.isPlaying)
+        {
+            return;
+        }
+
         FindPath(start, goal);
     }
 
@@ -69,6 +80,9 @@ public class Pathfinding : MonoBehaviour
 
     private void FindPath(Vector2Int start, Vector2Int goal)
     {
+        // clear first so the old path doesn't stack with the new one
+        path.Clear();
+
         Queue<Vector2Int> frontier = new Queue<Vector2Int>();
         frontier.Enqueue(start);
 
