@@ -6,6 +6,7 @@ public class Pathfinding : MonoBehaviour
     private List<Vector2Int> path = new List<Vector2Int>();
     [SerializeField] private Vector2Int start = new Vector2Int(0, 1);
     [SerializeField] private Vector2Int goal = new Vector2Int(4, 4);
+    [SerializeField] private Vector2Int obstaclePosition;
     private Vector2Int next;
     private Vector2Int current;
 
@@ -28,7 +29,7 @@ public class Pathfinding : MonoBehaviour
 
     private void Start()
     {
-        GenerateRandomGrid(10, 10, 0.3f);
+        GenerateRandomGrid(10, 10, 0.2f);
         FindPath(start, goal);
     }
 
@@ -58,6 +59,25 @@ public class Pathfinding : MonoBehaviour
         // keep start and goal open or the path doesnt get found
         grid[start.y, start.x] = 0;
         grid[goal.y, goal.x] = 0;
+    }
+
+    public void AddObstacle(Vector2Int position)
+    {
+        if (!IsInBounds(position))
+        {
+            Debug.Log("obstacle out of bounds " + position);
+            return;
+        }
+
+        grid[position.y, position.x] = 1;
+        FindPath(start, goal);
+    }
+
+    // ContextMenu can't pass arguments, so this uses the Inspector value
+    [ContextMenu("Add Obstacle")]
+    private void AddObstacleFromInspector()
+    {
+        AddObstacle(obstaclePosition);
     }
 
     private void OnDrawGizmos()
